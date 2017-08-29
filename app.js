@@ -4,7 +4,22 @@ var jsonfile = require("jsonfile");
 var BasicCard = require("./BasicCard.js");
 var ClozeCard = require("./ClozeCard.js");
 var cardsfile = require("./flashCards.json");
-var cardsArray = [];
+var newCard = [];
+// var basicCards = [];
+// var clozeCards = [];
+
+/*function getCards(){fs.readFile("flashCards.json", "utf-8", function(err, data){
+        if(err) {
+            throw err;
+        }
+        basicCards = cardsfile.basic;
+        clozeCards = cardsfile.cloze;
+        console.log(basicCards);
+    });
+}*/
+
+// getCards();
+// console.log(JSON.parse(cards));
 
 function prompt(){
     inquirer
@@ -45,17 +60,34 @@ function basicCard() {
         ]).then (function(newBasicCard){
             var cards = new BasicCard(newBasicCard.front, newBasicCard.back);
             console.log("New card added!");
-            cardsArray = fs.readFile("flashCards.json", function(err, data) {
+        
+            fs.readFile("flashCards.json", "utf-8", function(err, data) {
                 if (err) {
                     console.log(err)
                 }
-            })
-            cardsArray.push(cards);
-            fs.writeFile("flashCards.json", cardsArray, function(err, data) {
-                if (err) {
-                    console.log(err)
+            
+                if (data) {
+                    var my_BasicArray = JSON.parse(data);
+
+                    var obj = {
+                        front: cards.front,
+                        back : cards.back
+                    }
+                    my_BasicArray["basic"].push(obj)
+                    
+                    var test = JSON.stringify(my_BasicArray)
+                    
                 }
+                
+                fs.writeFile("flashCards.json", test, function(err, data) {
+                    if (err) {
+                        console.log(err)
+                    }
+                })
+                
             })
+            
+            
         })
 };
 
@@ -69,7 +101,7 @@ function clozeCard() {
             },
             {
                 type : "text",
-                message : "What would you like the answer phrase to be?",
+                message : "What phrase would you like to remove from the question?",
                 name : "back"
             },
             {
@@ -78,7 +110,34 @@ function clozeCard() {
                 name : "confirm",
                 default : "true"
             }
-        ])
+        ]).then (function(newClozeCard) {
+            var cards = new ClozeCard (newClozeCard.front, newClozeCard.back);
+            console.log("New card added!");
+
+            fs.readFile("flashCards.json", "utf-8", function(err, data) {
+                if (err) {
+                    console.log(err)
+                }
+                if (data) {
+                    var clozeArray = JSON.parse(data);
+                    var obj = {
+                        front : cards.front,
+                        back : cards.back
+                    }
+                    console.log(obj)
+                    clozeArray["cloze"].push(obj)
+                    var test = JSON.stringify(clozeArray)
+                }
+                fs.writeFile("flashCards.json", test, function(err, data){
+                    if (err){
+                        console.log(err);
+                    }
+                })
+            })
+            
+
+
+        })
 }
 
 

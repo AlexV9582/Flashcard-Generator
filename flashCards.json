@@ -1,9 +1,1 @@
-{
-    "basic" : [
-
-    ],
-
-    "cloze" : [
-
-    ]
-}
+{"basic":[{"front":"Your first name","back":"Alex"},{"front":"Your Last Name","back":"Vincent"},{"front":"asdf","back":"asdf"},{"front":"asdfasdf","back":"asdfasdf"}],"cloze":[{},{},{},{},{},{}]}
