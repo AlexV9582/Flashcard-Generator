@@ -84,7 +84,9 @@ function basicCard() {
                         console.log(err)
                     }
                 })
-                
+                if (newBasicCard.confirm){
+                    basicCard()
+                }
             })
             
             
@@ -96,13 +98,13 @@ function clozeCard() {
         .prompt([
             {
                 type : "text",
-                message : "What question would you like on your card?",
-                name: "front" 
+                message : "What text would you like on your card?",
+                name: "text" 
             },
             {
                 type : "text",
                 message : "What phrase would you like to remove from the question?",
-                name : "back"
+                name : "cloze"
             },
             {
                 type : "confirm",
@@ -111,7 +113,14 @@ function clozeCard() {
                 default : "true"
             }
         ]).then (function(newClozeCard) {
-            var cards = new ClozeCard (newClozeCard.front, newClozeCard.back);
+            var statement = newClozeCard.text.split(" ")
+            for (var i = 0; i < statement.length; i++) {
+                if (statement[i] == newClozeCard.cloze) {
+                    statement.splice(i, 1);
+                    var clozeStatement = statement.join(" ")
+                }
+            }
+            var cards = new ClozeCard(clozeStatement, newClozeCard.cloze.toLowerCase());
             console.log("New card added!");
 
             fs.readFile("flashCards.json", "utf-8", function(err, data) {
@@ -121,8 +130,8 @@ function clozeCard() {
                 if (data) {
                     var clozeArray = JSON.parse(data);
                     var obj = {
-                        front : cards.front,
-                        back : cards.back
+                        front : cards.text,
+                        back : cards.cloze
                     }
                     console.log(obj)
                     clozeArray["cloze"].push(obj)
@@ -133,10 +142,10 @@ function clozeCard() {
                         console.log(err);
                     }
                 })
+                if(newClozeCard.confirm){
+                    clozeCard()
+                }
             })
-            
-
-
         })
 }
 
